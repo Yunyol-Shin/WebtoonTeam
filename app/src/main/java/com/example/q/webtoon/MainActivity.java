@@ -1,30 +1,30 @@
 package com.example.q.webtoon;
 
-import android.os.Build;
+import android.content.Intent;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -35,25 +35,81 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    public FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+    public DatabaseReference databaseReference=firebaseDatabase.getReference();
+    public static ArrayList<Item> dbinfo=new ArrayList<Item>();
+    public static ArrayList<DatabaseReference> key=new ArrayList<DatabaseReference>();
+    public static listviewFragment[] webtoon= new listviewFragment[3];
+    public static String unique;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = new Intent(this, Splash.class);
+        startActivity(i);
 
 
 
-        setContentView(R.layout.activity_main);
 
+        hashable.instantiate(getApplicationContext());
+        unique = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        databaseReference.child("MyWebtoon").child(unique).addChildEventListener(new ChildEventListener() {
 
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Item item=dataSnapshot.getValue(Item.class);
+
+                for(int j=0;j<dbinfo.size();j++){
+                    if(dbinfo.get(j).getTitle().equals(item.getTitle()))
+                        return ;
+                }
+                dbinfo.add(item);
+                key.add(dataSnapshot.getRef());
+                if(webtoon[item.getSite()]!=null)
+                    webtoon[item.getSite()].addList(item);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Item item=dataSnapshot.getValue(Item.class);
+
+                for(int j=0;j<dbinfo.size();j++){
+                    if(dbinfo.get(j).getTitle().equals(item.getTitle())) {
+                        dbinfo.remove(j);
+                        key.remove(j);
+                        break;
+                    }
+                }
+                if(webtoon[item.getSite()]!=null)
+                    webtoon[item.getSite()].removeList(item);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         // Set up the ViewPager with the sections adapter.
+        setTheme(R.style.AppTheme);
+        setContentView(R.layout.activity_main);
+
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -130,13 +186,21 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
 
+
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position==0)
-                return new practice();
-            return PlaceholderFragment.newInstance(position + 1);
+            switch(position){
+                case 0:
+                    return new practice();
+                case 1:
+                    return WebtoonFragment.newInstance();
+                case 2:
+                    return new Tab3().newInstance();
+            }
+
+            return null;
         }
 
         @Override

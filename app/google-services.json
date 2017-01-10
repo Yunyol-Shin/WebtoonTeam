@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "966546063493",
+    "firebase_url": "https://webtoon-638fd.firebaseio.com",
+    "project_id": "webtoon-638fd",
+    "storage_bucket": "webtoon-638fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966546063493:android:926d58ccd6164ef6",
+        "android_client_info": {
+          "package_name": "com.example.q.webtoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966546063493-mav23mtis9tirjdt787hba2von338nqe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyu73BfGtNqrG0GkWPqUHIFisd6U_axaI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

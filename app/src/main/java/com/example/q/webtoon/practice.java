@@ -66,18 +66,17 @@ public class practice extends Fragment {
         /**
          * Return fragment with respect to Position .
          */
-
+        Fragment fragment[]=new Fragment[3];
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
+            switch(position){
                 case 0:
-                    return new listviewFragment();
                 case 1:
-                    return new listviewFragment();
                 case 2:
-                    return new listviewFragment();
+                    fragment[position]=listviewFragment.instantiate(position);
             }
-            return null;
+            return fragment[position];
+
         }
 
         @Override
