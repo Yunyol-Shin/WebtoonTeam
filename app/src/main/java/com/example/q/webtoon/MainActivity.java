@@ -213,11 +213,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "홈";
+                    return "Home";
                 case 1:
-                    return "웹툰";
+                    return "Webtoon";
                 case 2:
-                    return "업로드";
+                    return "Others";
             }
             return null;
         }
